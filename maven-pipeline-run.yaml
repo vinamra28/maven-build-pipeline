@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: maven-pipeline-run
+spec:
+  pipelineRef:
+    name: maven-pipeline
+  params:
+    - name: repo-url
+      value: https://github.com/rupalibehera/jboss-eap-quickstarts
+    - name: revision
+      value: "7.1.x-develop"
+    - name: context-path
+      value: "helloworld"
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: "10Gi"
+    - name: maven-settings
+      emptyDir: {}
+    - name: kubeconfig-dir
+      secret:
+        secretName: kubeconfig
